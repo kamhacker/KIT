@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task index{% endblock %}
+
+{% block body %}
+    <div class="jumbotron text-center"> <h1>Task index</h1> </div>
+
+    <table class="table table-bordred table-striped table-dark">
+        <thead>
+            <tr>
+                <th style="color: rgb(79, 205, 236);">Title</th>
+                <th style="color: rgb(79, 205, 236);">Description</th>
+                <th style="color: rgb(79, 205, 236);">Deadline</th>
+                <th style="color: rgb(79, 205, 236);">Created_at</th>
+                <th style="color: rgb(79, 205, 236);">Number_of_days_left</th>
+                <th style="color: rgb(79, 205, 236);">IsImportant</th>
+                <th style="color: rgb(79, 205, 236);">IsCompleted</th>
+                <th style="color: rgb(79, 205, 236);">actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td style="color: red">{{ task.deadline ? task.deadline|date('d-m-Y H:i') : '' }}</td>
+                <td>{{ task.createdAt ? task.createdAt|date('d-m-Y H:i') : '' }}</td>
+                <td style="text-align: center; color: red">
+                    {% set difference = date(task.deadline).diff(date("now")) %}
+                    {% set leftDays = difference.days %}
+                    {% if leftDays == 1 %}
+                    1 day
+                    {% elseif leftDays == 0 %}
+                     CAUTION DEADLINE OUTPASSED !!!
+                    {% else %}
+                    {{ leftDays }} days
+                    {% endif %}
+                    
+                </td>
+                <td style="text-align: center;">{{ task.isImportant ? 'Yes' : 'No' }}</td>
+                <td style="text-align: center;">{{ task.isCompleted ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('task_show', {'id': task.id}) }}">show</a>
+                    <a class="btn btn-primary" href="{{ path('task_edit', {'id': task.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-success" href="{{ path('task_new') }}">Create new</a>
+{% endblock %}
