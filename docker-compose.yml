@@ -1,0 +1,33 @@
+version: '3.3'
+
+services: 
+    php-fpm:
+        container_name: php_container
+        build: ./
+        ports: 
+            - 5000:8000
+        volumes: 
+            - ./:/var/www/html
+        depends_on: 
+            - mysql
+    mysql:
+        container_name: mysql_container
+        image: mariadb
+        restart: always
+        environment: 
+            MYSQL_DATABASE: 'tasksDatabase'
+            MYSQL_ROOT_PASSWORD: 'root'
+        expose: 
+            - '3306'
+        volumes: 
+            - ./todolist/tasksDatabase:/var/lib/mysql
+    adminer:
+        image: adminer
+        restart: always
+        environment: 
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+        ports:
+            - 8081:8080
+volumes: 
+    tasksDatabase:
